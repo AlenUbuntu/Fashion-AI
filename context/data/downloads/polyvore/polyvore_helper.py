@@ -80,7 +80,7 @@ def resample_fill_the_blank(data_dir):
 
     outfitId2cat = {}
     for outfit in json_data:
-        for item in outfit['item']:
+        for item in outfit['items']:
             key = '{}_{}'.format(outfit['set_id'], item['index'])   # OUTFIT-ID_INDEX
             outfitId2cat[key] = item['categoryid']
         
@@ -191,9 +191,8 @@ def resample_compatibility(data_dir):
         base = random.choice(valid_outfits)
 
         new_outfit = []
-
         for item in base:
-            item_cat = item['categoryid']
+            item_cat = item2cat[item]
             # randomly sample another item from item_cat
             new_item = random.choice(cat_items[item_cat])
             # add to new outfit
@@ -356,7 +355,7 @@ parser = argparse.ArgumentParser(description='preprocess polyvore dataset - get 
 parser.add_argument('--phase', default='train', choices=['train', 'valid', 'test'])
 parser.add_argument('--root', default='/home/alan/Downloads/fashion/polyvore', type=str)
 parser.add_argument('--save-path', type=str, default='dataset')
-parser.add_argument('--d', type=int, default=1024, help='dimension of image feature vector extracted by a pre-trained CNN model.')
+parser.add_argument('--d', type=int, default=2048, help='dimension of image feature vector extracted by a pre-trained CNN model.')
 
 args = parser.parse_args()
 
