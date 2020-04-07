@@ -47,7 +47,6 @@ class DataLoaderPolyvore(DataLoader):
         # get positive edges 
         pos_row_idx, pos_col_idx = lower_adj.nonzero()
         pos_labels = np.array(lower_adj[pos_row_idx, pos_col_idx]).squeeze()
-
         # split the positive edges into two parts
         # part 1 is used for message passing - GNN 
         # part 2 is used as prediction target, i.e., we predict connection prob
@@ -192,7 +191,7 @@ class DataLoaderPolyvore(DataLoader):
             resample: if True, use the resampled version
             subset: if True, use only a subset of outfits as the query, and use the rest as links 
                     to the choices.
-            expand_outfit: whether expand edges for question item nodes or not.
+            expand_outfit: whether expand edges for question and answer item nodes or not.
         """
         assert K >= 0
 
@@ -301,8 +300,3 @@ class DataLoaderPolyvore(DataLoader):
         assert len(edges) <= K
         return edges
     
-    def get_test_compatibility(self):
-        pass 
-
-    def set_test_compatibility(self):
-        pass

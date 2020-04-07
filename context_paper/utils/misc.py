@@ -25,8 +25,9 @@ def normalize_feature(feats, mean=None, std=None, return_moments=False):
         return res, mean, std 
     return res
 
-def compute_degree_support(adj, S, adj_self_connections=False):
-    print("Compute adjacency matrix up to {} degrees, i.e., A^{}".format(S, S))
+def compute_degree_support(adj, S, adj_self_connections=False, verbose=True):
+    if verbose:
+        print("Compute adjacency matrix up to {} degrees, i.e., A^{}".format(S, S))
     n_nodes = adj.shape[0]
     # [A0, A1, A2, ..., AS]
     supports = [sp.identity(n_nodes)]
@@ -74,7 +75,6 @@ def normalize_nonsym_adj(adj):
 
 def support_dropout(adj, p, drop_edge=False):
     assert 0.0 < p < 1.0
-
     lower_adj = sp.tril(adj)
     n_nodes = lower_adj.shape[0]
 

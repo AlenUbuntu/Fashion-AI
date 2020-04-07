@@ -102,6 +102,11 @@ class CompatibilityGAE(nn.Module):
         pred = (torch.sigmoid(logits) >= 0.5).int()
         return pred
 
+    def predict_prob(self, inputs, supports, r_indices, c_indices):
+        logits = self.forward(inputs, supports, r_indices, c_indices)
+        prob = torch.sigmoid(logits)
+        return prob
+
     def train_epoch(self, inputs, supports, r_indices, c_indices, labels):
         logit = self.forward(inputs, supports, r_indices, c_indices)
         loss = self.compute_loss(logit, labels)

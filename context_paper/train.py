@@ -1,6 +1,7 @@
 import argparse
 import time 
 import numpy as np 
+import os
 import torch 
 from pprint import pprint 
 from dataloader import DataLoaderPolyvore
@@ -26,7 +27,9 @@ parser.add_argument('-drop', '--dropout', type=float, default=0.5, help='dropout
 parser.add_argument('-deg', '--degree', type=int, default=1, help='degree of convolution, i.e., number of support nodes.')
 parser.add_argument('-sd', '--support-dropout', type=float, default=0.15, help='Use dropout on support adjacency matrix, dropping all the connections from some nodes')
 parser.add_argument('--data-dir', type=str,
-                    default='/home/alan/Downloads/fashion/polyvore/dataset')
+                    default='/home/alan/Downloads/fashion/polyvore/dataset2')
+parser.add_argument('--save-path', type=str,
+                    default='/home/alan/Downloads/fashion/polyvore/')
 parser.add_argument('--device', type=str, default='cuda:0')
 
 mg = parser.add_mutually_exclusive_group(required=False)
@@ -92,11 +95,11 @@ val_col_idx = torch.from_numpy(val_col_idx).long().to(DEVICE)
 train_support = compute_degree_support(train_mp_adj, DEGREE, adj_self_connections=ADJ_SELF_CONNECTIONS)
 val_support = compute_degree_support(val_mp_adj, DEGREE, adj_self_connections=ADJ_SELF_CONNECTIONS)
 
-# normalize these support adjacency matrices
-for i in range(len(train_support)):
+# normalize these support adjacency matrices, except the first one which is symmetric
+for i in range(1, len(train_support)):
     train_support[i] = normalize_nonsym_adj(train_support[i])
     val_support[i] = normalize_nonsym_adj(val_support[i])
-# convert to tensor
+
 val_support = [csr_to_sparse_tensor(adj).to(DEVICE) for adj in val_support]
 
 num_supports = len(train_support)
@@ -128,12 +131,13 @@ best_epoch = 0
 best_val_train_acc = 0
 best_train_acc = 0 
 
+tmp = csr_to_sparse_tensor(train_support[0]).to(DEVICE)
 for epoch in range(NB_EPOCHS):
     if SUP_DROP > 0:
         # do not modify the first support adj matrix, which is self-connections
-        epoch_train_supports = []
+        epoch_train_supports = [tmp] # do not miss the first self-connection edges
         for i in range(1, len(train_support)):
-            sampled_adj = support_dropout(train_support[i].copy(), SUP_DROP, drop_edge=True)
+            sampled_adj = support_dropout(train_support[i], SUP_DROP, drop_edge=True)
             # binarilize the support adjacency matrix
             sampled_adj.data[...] = 1 
             sampled_adj = normalize_nonsym_adj(sampled_adj)
@@ -157,6 +161,14 @@ for epoch in range(NB_EPOCHS):
         best_val_acc = valid_acc
         best_epoch = epoch 
         best_val_train_acc = train_acc 
+        # save model
+        torch.save(
+            {
+                'state_dict': model.state_dict(),
+                'args': args
+            }, 
+            os.path.join(args['save_path'], 'best_model.pth')
+        )
     
     if train_acc > best_train_acc:
         best_train_acc = train_acc
