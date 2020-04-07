@@ -65,7 +65,7 @@ Paper [3]
   </tr>
   <tr>
     <td>Context (Ours) (K=0)</td>
-    <td>64.6</td>
+    <td>64.8</td>
     <td>48.3</td>
     <td>0.86</td>
     <td>0.77</td>
@@ -79,7 +79,7 @@ Paper [3]
   </tr>
   <tr>
     <td>Context (Ours) (K=3)</td>
-    <td>95.1</td>
+    <td>95.3</td>
     <td>91.1</td>
     <td>0.99</td>
     <td>0.98</td>
@@ -93,7 +93,7 @@ Paper [3]
   </tr>
   <tr>
     <td>Context (Ours) (K=15)</td>
-    <td>96.3</td>
+    <td>96.4</td>
     <td>92.7</td>
     <td>0.99</td>
     <td>0.99</td>
