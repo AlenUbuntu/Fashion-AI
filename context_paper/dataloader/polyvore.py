@@ -191,7 +191,7 @@ class DataLoaderPolyvore(DataLoader):
             resample: if True, use the resampled version
             subset: if True, use only a subset of outfits as the query, and use the rest as links 
                     to the choices.
-            expand_outfit: whether expand edges for question and answer item nodes or not.
+            expand_outfit: whether to include question items during the BFS expansion process (K>0).
         """
         assert K >= 0
 

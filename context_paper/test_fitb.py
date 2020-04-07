@@ -9,7 +9,7 @@ from dataloader import DataLoaderPolyvore
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Test Fill in the Blank Questions")
     parser.add_argument('-eo', '--expand-outfit', action='store_true',
-                        help='whether to expand edges for question item and answer nodes or not')
+                        help='whether to include question items during the BFS expansion process (K>0)')
     parser.add_argument('-resample', '--resample', action='store_true',
                         help='Runs the test with the resampled FITB tasks (harder)')
     parser.add_argument('-subset', '--subset', action='store_true',
@@ -54,10 +54,7 @@ if __name__ == '__main__':
     # these parameters should be set same as those in training phase
     # load weight
     checkpoint = torch.load(args['load_model'])
-    # model_args = checkpoint['args']
-
-    model_args = args
-    checkpoint = {'state_dict': checkpoint}
+    model_args = checkpoint['args']
 
     DEGREE = model_args['degree']  
     HIDDEN = model_args['hidden']
